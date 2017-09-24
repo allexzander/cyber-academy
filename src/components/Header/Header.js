@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { IndexLink, browserHistory } from 'react-router'
-import './Header.scss'
+//import './Header.scss'
+import './HeaderNew.scss'
 import backend from '../../apis'
 import firebase from 'firebase'
 import LocalizedStrings from 'react-localization'
@@ -12,8 +13,13 @@ class Header extends Component {
       words: ['faculties', 'tournaments', 'forum', 'myCourses', 'statistics', 'logOut'],
       wordsEng: {},
       wordsRu: {},
-      strings: {}
+      strings: {},
+      language: "RU"
     }
+  }
+
+  handleChangeLanguage () {
+    console.log("Language change")
   }
 
   componentDidMount () {
@@ -85,7 +91,7 @@ class Header extends Component {
     console.log(strings.logOut)
     const classNameFirstButton = Boolean(Object.keys(user).length) ?
     'dropdown firstButtonLogin' : 'dropdown firstButtonLogout'
-    return (
+    /*return (
       <div>
         <div className='col-xs-12 col-md-12'>
           <div
@@ -154,7 +160,63 @@ class Header extends Component {
           }
         </div>
       </div>
-    )
+    )*/
+//<li><a className="btn btn-default button_shadow-golden button-golden" href={`${backend}/auth/steam`}> LOGIN </a></li>
+    return (<div className="row">
+    <div className="col-sm-12">
+        <div id="header">
+            <nav className="navbar navbar-default" id="main_nav">
+                
+                    <div className="navbar-header">
+                        <a className="navbar-brand" href="/" title='Return to the homepage'><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/logo.png?alt=media&token=338a7d4a-1e8a-4b6a-87a0-0d9e2e9353dc" alt="logo"/></a>
+                    </div>
+                    <ul className="nav navbar-nav nav_center_li pull-right-lg" id="main_nav_menu">
+                        <li className="dropdown">
+                            <button className="button-golden dropbtn button_shadow-golden" onClick={() => 
+                              { browserHistory.push({ pathname: `/faculties` }) }}>{strings.faculties}</button>
+                            <div className="dropdown-content text-uppercase">
+                            <a href='/faculty/CS:GO'>cs:go</a>
+                            <a href='/faculty/Dota2'>dota2</a>
+                            <a href='/faculty/LoL'>lol</a>
+                                <div><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/dropdown_faculties_down.png?alt=media&token=17c819b5-e5d5-42b7-8896-df9354c2aa96" alt="dropdown_facs"/></div>
+                            </div>
+                    </li>
+                    <li><button type="button" className="btn btn-default button_shadow-golden button-golden" onClick={() => 
+                      { browserHistory.push({ pathname: `` }) }}>{strings.tournaments}</button></li>
+                    <li><button type="button" className="btn btn-default button_shadow-golden button-golden"onClick={() => 
+                      { browserHistory.push({ pathname: '/forum' }) }}>{strings.forum}</button></li>
+                      {!Object.keys(user).length && 
+                      <li><button type="button" className="btn btn-default button_shadow-golden  button-golden text-uppercase" id="login" onClick={() => 
+                      { window.location.href = `${backend}/auth/steam`} }>
+                      <img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/icon_steam_new.jpg?alt=media&token=45309ab7-ab34-489f-8184-b6eb84782fcc" alt="icon_steam"/>
+                      login</button></li>}
+                    <li id="language_menu">
+                        <div className="dropdown">
+                            <button className="button-golden dropbtn button_shadow-golden">Ru</button>
+                            <div className="dropdown-content">
+                                <a href="#" id="first_link" className="button-golden" onClick={() =>{ onEngLang()} }>En</a>
+                                <a href="#" className="button-golden" onClick={() => { onRusLang()} }>Ru</a>
+                                <a href="#" className="button-golden">De</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                      {Boolean(Object.keys(user).length) &&
+                      <div className='dropdown'>
+                        <div className='navbtn4'>{user.displayName}</div>
+                        <div className='dropdown-content'>
+                          <a href='/MyCourses'>{strings.myCourses}</a>
+                          <a href='/statistics'>{strings.statistics}</a>
+                          <a href='/' onClick={() => firebase.auth().signOut()}>
+                          Log out</a>
+                          </div>
+                          </div>
+                          }
+                    </li>
+                </ul>
+        </nav>
+    </div>
+</div></div>)
   }
 }
 Header.propTypes = {
