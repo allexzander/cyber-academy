@@ -23,12 +23,18 @@ html,
 body {
   margin: 0;
   padding: 0;
+  background: #000000;
+  background: url("https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/background_full_hd.jpg?alt=media&token=751f087f-0083-400a-8a35-54c4753d76dc");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; 
+  margin-top: 20px;
   height: 100%;
   font-family: MICRADI, sans-serif;
   font-size: 14px;
   color: #e5d800;
   font-weight: medium;
-
 }
 
 *,

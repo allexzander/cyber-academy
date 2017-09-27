@@ -85,7 +85,7 @@ class HomeView extends Component {
     const classNameButtonPause = stopVideo && showVideo ? 'pauseVideoToParents-home' : 'playVideoToParents-home'
     const videoButtonName = showVideo ? videoButtonCoverVideoRu : videoButtonVideoToParentsRu
     return (
-      <div className='container'>
+      <span className>
         <div className="row">
         <div className="col-sm-12">
             <div id="banner"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/banner_cs_go.jpg?alt=media&token=e8d26650-a125-48d7-8bf0-94ed347cddbd" alt="banner"/></div>
@@ -145,7 +145,7 @@ class HomeView extends Component {
                 </div>
             </div>
         </div>
-        </div>
+        </span>
         )
       }
     }
