@@ -59,7 +59,7 @@ class AppContainer extends Component {
     return (
       <Provider store={store}>
           <div style={{ height: '100%',
-            backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/background.jpg?alt=media&token=a66ab5c6-768d-465e-899f-55ce51a701b8)' }}
+            backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/background_full_hd.jpg?alt=media&token=751f087f-0083-400a-8a35-54c4753d76dc)' }}
             className= 'appContainer'>
             <Router history={browserHistory} children={routes} />
           </div>
