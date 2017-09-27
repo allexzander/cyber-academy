@@ -15,7 +15,7 @@ const renderHeader = location => {
 }
 
 export const CoreLayout = ({ children, location }) => (
-  <div className= 'container'>
+  <span>
     {renderHeader(location)}
     <div>
       {children}
@@ -23,7 +23,7 @@ export const CoreLayout = ({ children, location }) => (
     <div>
       <Footer />
     </div>
-  </div>
+  </span>
 )
 
 CoreLayout.propTypes = {

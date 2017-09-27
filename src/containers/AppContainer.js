@@ -58,7 +58,7 @@ class AppContainer extends Component {
 
     return (
       <Provider store={store}>
-          <div className= 'appContainer'>
+          <div className= 'container appContainer'>
             <Router history={browserHistory} children={routes} />
           </div>
       </Provider>
