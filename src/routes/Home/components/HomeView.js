@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, browserHistory } from 'react-router'
-import './HomeView.scss'
+import './HomeViewNew.scss'
 import Slider from 'react-slick'
 import VideoPlayer from './VideoPlayer'
 import firebase from 'firebase'
@@ -86,63 +86,45 @@ class HomeView extends Component {
     const videoButtonName = showVideo ? videoButtonCoverVideoRu : videoButtonVideoToParentsRu
     return (
       <div className='container'>
-        <div className='row'>
-
-          {!showVideo &&
-            <div className='content-home'>
-              { <Slider {...settings}>
-                <div className='sliderDota-home'
-                  style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sliderDota.jpg?alt=media&token=15ae6608-fd44-426d-a363-3cb76852816a)'}}
-                  ></div>
-                  <div className='sliderCSGO-home'
-                    style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sliderCSGO.jpg?alt=media&token=3759d60e-e83a-49b8-b035-20417f63c1bb)'}}
-                    ></div>
-                  </Slider> }
-
-                  <div className='fourQuaters-home'>
-                    <div className='quater1-home'
-                      style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/quater1.jpg?alt=media&token=bc601b6e-1b69-4577-9516-990632295b32)'}}
-                      >
-                        <div className='text-home'>
-                          {quaterText1Ru}
-                        </div>
-                    </div>
-
-                    <div className='quater2-home'
-                      style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/quater2.jpg?alt=media&token=81576f1b-f2db-47a5-ac13-47800638a1ea)'}}
-                      >
-                      <div className='text-home'>
-                        {quaterText2Ru}
-                      </div>
-                    </div>
-
-                    <div className='quater3-home'
-                      style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/quater3.jpg?alt=media&token=7465059e-d328-453d-8654-c6cb877ee9cf)'}}
-                      >
-                      <div className='text-home'>
-                        {quaterText3Ru}
-                      </div>
-                    </div>
-
-                    <div className='quater4-home'
-                      style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/quater4.jpg?alt=media&token=8b03c259-44ee-44cc-ab5f-f3bee55c99d1)'}}
-                      >
-                      <div className='text-home'>
-                        {quaterText4Ru}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className='col-xs-12 col-md-12'>
-                    <div className='btnStart-home'
-                      style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/btnStartEduc.png?alt=media&token=3699ba5c-b048-4656-914f-5b1c5b9afcb7)'}}
-                      onClick={() => { browserHistory.push({ pathname: '/faculties' }) }}
-                      >
-                        {buttonTextRu}
-                    </div>
-                  </div>
-                </div>}
-                {!!showVideo && <div style={{ marginTop: '30px' }}>
+        <div className="row">
+        <div className="col-sm-12">
+            <div id="banner"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/banner_cs_go.jpg?alt=media&token=e8d26650-a125-48d7-8bf0-94ed347cddbd" alt="banner"/></div>
+            <div id="banner_mobile">CS GO</div>
+        </div>
+    </div>
+    <div className="row" id="content">
+        <div className="col-sm-6 col-md-4 col-lg-3">
+            <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
+                <div className="description text-uppercase">{quaterText1Ru}</div>
+                <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/gears.png?alt=media&token=d6509832-ff0d-4eec-8267-46cf02344579" alt="icon_gears"/></div></div>
+            </div>
+            <div className="col-sm-6 col-md-4 col-lg-3">
+                <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
+                    <div className="description text-uppercase">{quaterText2Ru}</div>
+                    <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/book.png?alt=media&token=c5aaa8b8-1172-40cc-9369-5446700ae174" alt="icon_book"/></div></div>
+            </div>
+			<div className="clearfix visible-sm-block"></div>
+            <div className="col-sm-6 col-md-4 col-lg-3">
+                <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
+                    <div className="description text-uppercase">{quaterText3Ru}</div>
+                    <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/hat.png?alt=media&token=e106cf0e-3dff-4276-9fc6-bb30c5584a92" alt="icon_hat"/></div></div>
+            </div>
+            <div className="col-sm-6 col-md-12 col-lg-3">
+                <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
+                    <div className="description text-uppercase">{quaterText4Ru}</div>
+                    <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/trophy.png?alt=media&token=4e251814-85d7-4674-b19d-72ecbc8e30d3" alt="icon_trophy"/></div></div>
+            </div>
+        </div>
+        <div className="row">
+            <div className="col-sm-12">
+                <div className="text-center" id="start_course">
+                  <button type="button" className="btn btn-default button_shadow-golden button-golden" onClick={() => { browserHistory.push({ pathname: '/faculties' }) }}>
+                    {buttonTextRu}</button></div>
+            </div>
+        </div>
+        <div className="row">
+            <div className="col-sm-12">
+              {!!showVideo && <div style={{ marginTop: '30px' }}>
                   <div>
                     <VideoPlayer
                       url={linkVideoToParentsRu}
@@ -150,19 +132,20 @@ class HomeView extends Component {
                     />
                   </div>
                 </div>}
-                <div className='videoToParents-home' >
-                  <div
-                    className={classNameButtonPause}
-                    onClick={() => { this.setState({ stopVideo: !stopVideo, showVideo:true }) }}
-                  >
-                  </div>
-                  <div className='textVideoToParents-home'
-                    onClick={() => { this.setState({ showVideo: !showVideo, stopVideo: !showVideo  }) }}
-                    >{videoButtonName}
-                  </div>
-               </div>
-             </div>
-          </div>
+            </div>
+        </div>
+        <div className="row">
+            <div className="col-sm-12">
+                <div id="player">
+                    <div id="play_button">
+                        <a href="#" onClick={() => { this.setState({ showVideo: !showVideo, stopVideo: !showVideo  }) }}>
+                          <img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/player_play_button.png?alt=media&token=164da85f-0e16-42a1-a020-96883d41161a" alt="player_play_button"/></a>
+                        <span id="video_message">{videoButtonName}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
         )
       }
     }

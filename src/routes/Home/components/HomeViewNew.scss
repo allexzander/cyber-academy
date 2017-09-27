@@ -1,0 +1,131 @@
+#content {
+    margin-top: 50px;
+}
+
+#content.row > div {
+    margin-bottom: 20px;
+}
+
+/*rectangular section with gradient border*/
+.section {
+    min-height: 240px;
+    border: 4px solid transparent;
+    border-image: -moz-linear-gradient(bottom, #004678 0%, #00609d 16%, #74c5f7 30%, #155783 53%, #6ec0f3 68%, #005b96 84%, #002d54 100%); /* FF3.6-15 */
+    border-image: -webkit-linear-gradient(bottom, #004678 0%,#00609d 16%,#74c5f7 30%,#155783 53%,#6ec0f3 68%,#005b96 84%,#002d54 100%); /* Chrome10-25,Safari5.1-6 */
+    border-image: linear-gradient(to bottom, #004678 0%,#00609d 16%,#74c5f7 30%,#155783 53%,#6ec0f3 68%,#005b96 84%,#002d54 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    border-image-slice: 1;
+    background:black;
+    position: relative;
+}
+
+.section>img {
+    position: absolute;
+    top:40px;
+    left: 0;
+}
+
+.description {
+    position: absolute;
+    left:0;
+    bottom:12px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-family: 'Micra', arial;
+    font-size: 12px;
+    line-height: 1.167;
+    text-align: left;
+    color: rgb( 161, 218, 248 );
+}
+
+/*circle is positioned above div's layer with z-index, and placed in top right corner*/
+.circle { 
+   width: 184px;
+   height: 184px;
+   background: black;
+   background: url("https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_bg_merged_completely.png?alt=media&token=fc84592b-72c8-410b-ab32-c4a21eb360fd");
+   position: absolute;
+   right: -5px;
+   top: -40px;
+   z-index: 2;
+   padding: 0;
+   /*border: 4px solid royalblue; initial plan was to have rounded border for circle*/
+}
+
+/*circle image is centered horizontalli, and vetically*/
+.circle>img {
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;/*this shouldn't be here, but it doesn't work otherwise)*/
+	display: block;
+}
+
+/*Banner----------------------*/
+#banner_mobile {
+    font-family: 'Micra', arial;
+    color: rgb( 229, 216, 0 );
+    font-size: 16px;
+    z-index: 1;
+    text-align: center;
+    min-width: 100%;
+    background: transparent;
+    background-size: 100%;
+    display: none;
+}
+
+#banner img {
+    width: 100%;
+    border: 4px solid transparent;
+    border-image: -moz-linear-gradient(top, #012e4e 0%, #013e67 16%, #4e84a5 30%, #13405d 53%, #447898 68%, #183f58 84%, #01233f 100%); /* FF3.6-15 */
+    border-image: -webkit-linear-gradient(top, #012e4e 0%,#013e67 16%,#4e84a5 30%,#13405d 53%,#447898 68%,#183f58 84%,#01233f 100%); /* Chrome10-25,Safari5.1-6 */
+    border-image: linear-gradient(to bottom, #012e4e 0%,#013e67 16%,#4e84a5 30%,#13405d 53%,#447898 68%,#183f58 84%,#01233f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    border-image-slice: 1;
+}
+/*---------------------------*/
+
+/*Start course---------*/
+#start_course {
+    margin-bottom: 15px;
+    background: transparent;
+    border-image-slice: 1;
+}
+
+#start_course>button, #start_course>button:hover {
+    min-width: 226px;
+    min-height: 38px;
+}
+
+/*----------------------*/
+
+/*-----------player*/
+#player {
+    height: 70px;
+    font-family: "Micra";
+    color: rgb( 133, 189, 226 );
+    font-size: 14px;
+    border: 4px solid transparent;
+    border-image: linear-gradient(to left top, #5da9da, #002d54); /*gradient doesn't work in IE8 and less, discard IE8?*/
+    border-image-slice: 1;
+    background: url("https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/player_bg.jpg?alt=media&token=ebdbc4d3-5ab4-40a9-8ca9-27cc8d3a8cf0");
+    background-repeat: no-repeat;
+}
+#player #play_button {
+    margin-left: 290px;
+}
+
+#player #play_button img{
+    padding: 0;
+    display: inline-block;
+}
+
+#player #video_message {
+    margin-left: 90px;
+    line-height: 64px;
+}
+
+/*----------------*/
+
+/* TODO: Temp Fix for flex property from Footer scss */
+.container {
+    display: initial; 
+}
