@@ -1,32 +1,34 @@
 import React, { PropTypes } from 'react'
 import { IndexLink, Link, browserHistory } from 'react-router'
 import './Footer.scss'
+import './FooterNew.scss'
 
 export const Footer = ({ user }) =>
 <div className='container'>
 <div className='row'>
-  <div className='footer-block-footer '>
-    <div className='container d-flex align-items-start'>
-      <a className='block-footer ' href='/about'>ABOUT</a>
-      <a className='block-footer ' href='/becomeacoach'>BECOME A COACH</a>
-      <a className='block-footer ' href='/vip'>VIP</a>
-      <a className='block-footer ' href='/support'>SUPPORT</a>
-      <a className='block-footer ' href='/terms'>TERMS</a>
-      <a className='block-footer ' href='/coaches'>COACHES</a>
-      <a href='http://facebook.com'><p className='fb-footer '
-        style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sm-fb.png?alt=media&token=102f2bd1-7284-47fa-bb93-1a19044d6c31)'}}
-        ></p></a>
-      <a href='http://viber.com'><p className='viber-footer'
-        style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sm-twitter.png?alt=media&token=7188ed23-a878-4b5a-92d4-4f950c0ddb95)'}}
-        ></p></a>
-      <a href='http://twitter.com'><p className='twitter-footer'
-        style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sm-viber.png?alt=media&token=e7178a41-5beb-407d-94e3-e268e15e488c)'}}
-        ></p></a>
-      <a href='http://vk.com' ><p className='vk-footer'
-        style={{ backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/sm-vk.png?alt=media&token=9bdf350e-808c-4f02-81a8-5f9ca8bf9d7c)'}}
-        ></p></a>
-    </div>
-  </div>
+<div class="col-sm-12">
+<div id="footer">
+    <nav className="navbar navbar-default" id="nav_bottom">
+            <div className="navbar-header">
+                <a className="navbar-brand" href="#"></a>
+            </div>
+            <ul className="nav navbar-nav nav_center_li text-uppercase">
+                <li><a href="/about">about</a></li>
+                <li><a href="/becomeacoach">become a coach</a></li>
+                <li><a href="/vip">vip</a></li>
+                <li><a href="/support">support</a></li>
+                <li><a href="/terms">terms</a></li>
+                <li><a href="/coaches">coaches</a></li>
+            </ul>
+            <ul className="nav navbar-nav nav_always_horizontal nav_social pull-right-lg">
+                <li><a href="http://facebook.com"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/social_fb.png?alt=media&token=ec34fac1-e467-40db-9e00-ec5c1d6aaed2" alt="icon_social_fb"/></a></li>
+                <li><a href="http://viber.com"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/social_whatsup.png?alt=media&token=91ce93c2-2d6f-4594-bd28-b65e88d8efd5" alt="icon_social_whatsup"/></a></li>
+                <li><a href="http://twitter.com"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/social_twitter.png?alt=media&token=8bb53b57-c773-4f26-9f70-67ef68459c26" alt="icon_social_twitter"/></a></li>
+                <li><a href="http://vk.com"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/social_vk.png?alt=media&token=3c126eec-b929-4cd2-bd63-6eb2b38036ae" alt="icon_social_vk"/></a></li>
+            </ul>
+    </nav>
+</div>
+</div>
 </div>
 </div>
 Footer.propTypes = {
