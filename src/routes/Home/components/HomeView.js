@@ -57,6 +57,7 @@ class HomeView extends Component {
   }
 
   render () {
+    let videoUrl = ""; //linkVideoToParentsRu
     const { showVideo, stopVideo } = this.state
     console.log(this.props)
     const settings = {
@@ -92,6 +93,7 @@ class HomeView extends Component {
             <div id="banner_mobile">CS GO</div>
         </div>
     </div>
+    {!showVideo &&
     <div className="row" id="content">
         <div className="col-sm-6 col-md-4 col-lg-3">
             <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
@@ -115,6 +117,7 @@ class HomeView extends Component {
                     <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/trophy.png?alt=media&token=4e251814-85d7-4674-b19d-72ecbc8e30d3" alt="icon_trophy"/></div></div>
             </div>
         </div>
+    }
         <div className="row">
             <div className="col-sm-12">
                 <div className="text-center" id="start_course">
@@ -124,10 +127,10 @@ class HomeView extends Component {
         </div>
         <div className="row">
             <div className="col-sm-12">
-              {!!showVideo && <div style={{ marginTop: '30px' }}>
+              {!!showVideo && <div>
                   <div>
                     <VideoPlayer
-                      url={linkVideoToParentsRu}
+                      url={videoUrl}
                       stopVideo={stopVideo && showVideo}
                     />
                   </div>
