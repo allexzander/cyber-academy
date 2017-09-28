@@ -190,6 +190,17 @@ class Header extends Component {
                       { window.location.href = `${backend}/auth/steam`} }>
                       <img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/icon_steam_new.jpg?alt=media&token=45309ab7-ab34-489f-8184-b6eb84782fcc" alt="icon_steam"/>
                       login</button></li>}
+                    {Boolean(Object.keys(user).length) &&
+                    <li className="dropdown">
+                            <button className="button-golden dropbtn button_shadow-golden" onClick={() => 
+                              { browserHistory.push({ pathname: `/faculties` }) }}>{user.displayName}</button>
+                            <div className="dropdown-content">
+                            <a href='/MyCourses'>{strings.myCourses}</a>
+                            <a href='/statistics'>{strings.statistics}</a>
+                            <a href='/' onClick={() => firebase.auth().signOut()}>Log out</a>
+                                <div><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/dropdown_faculties_down.png?alt=media&token=17c819b5-e5d5-42b7-8896-df9354c2aa96" alt="dropdown_facs"/></div>
+                            </div>
+                    </li>}
                     <li id="language_menu">
                         <div className="dropdown">
                             <button className="button-golden dropbtn button_shadow-golden">Ru</button>
@@ -199,19 +210,6 @@ class Header extends Component {
                                 <a href="#" className="button-golden">De</a>
                             </div>
                         </div>
-                    </li>
-                    <li>
-                      {Boolean(Object.keys(user).length) &&
-                      <div className='dropdown'>
-                        <div className='navbtn4'>{user.displayName}</div>
-                        <div className='dropdown-content'>
-                          <a href='/MyCourses'>{strings.myCourses}</a>
-                          <a href='/statistics'>{strings.statistics}</a>
-                          <a href='/' onClick={() => firebase.auth().signOut()}>
-                          Log out</a>
-                          </div>
-                          </div>
-                          }
                     </li>
                 </ul>
         </nav>
