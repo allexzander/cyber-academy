@@ -86,14 +86,15 @@ class HomeView extends Component {
     const classNameButtonPause = stopVideo && showVideo ? 'pauseVideoToParents-home' : 'playVideoToParents-home'
     const videoButtonName = showVideo ? videoButtonCoverVideoRu : videoButtonVideoToParentsRu
     return (
-      <span className>
-        <div className="row">
-        <div className="col-sm-12">
-            <div id="banner"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/banner_cs_go.jpg?alt=media&token=e8d26650-a125-48d7-8bf0-94ed347cddbd" alt="banner"/></div>
-            <div id="banner_mobile">CS GO</div>
-        </div>
-    </div>
-    {!showVideo &&
+      <span className="no-any-class">
+          {!showVideo &&
+            <span className="no-any-class">
+          <div className="row">
+              <div className="col-sm-12">
+                  <div id="banner"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/banner_cs_go.jpg?alt=media&token=e8d26650-a125-48d7-8bf0-94ed347cddbd" alt="banner"/></div>
+                  <div id="banner_mobile">CS GO</div>
+                  </div>
+          </div>
     <div className="row" id="content">
         <div className="col-sm-6 col-md-4 col-lg-3">
             <div className="section"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/circle_inner_ornament.png?alt=media&token=e1ccd349-0525-486a-b311-9e90448f89aa" alt="circle_ornament"/>
@@ -117,7 +118,6 @@ class HomeView extends Component {
                     <div className="circle"><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/trophy.png?alt=media&token=4e251814-85d7-4674-b19d-72ecbc8e30d3" alt="icon_trophy"/></div></div>
             </div>
         </div>
-    }
         <div className="row">
             <div className="col-sm-12">
                 <div className="text-center" id="start_course">
@@ -125,6 +125,8 @@ class HomeView extends Component {
                     {buttonTextRu}</button></div>
             </div>
         </div>
+        </span>
+        }
         <div className="row">
             <div className="col-sm-12">
               {!!showVideo && <div>
