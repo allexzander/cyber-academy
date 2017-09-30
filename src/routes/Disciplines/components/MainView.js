@@ -3,6 +3,7 @@ import firebase from 'firebase'
 import {browserHistory} from 'react-router'
 import './disciplines.scss'
 import _ from 'lodash'
+import LocalizedStrings from 'react-localization'
 
 class MainView extends Component {
   constructor(props) {
@@ -10,9 +11,75 @@ class MainView extends Component {
 
     this.state = {
       courses: [],
-      coursesFetched: false
+      coursesFetched: false,
+      siteInfoLoaded: false,
+      words: ['hiWord'],
+      wordsEng: {},
+      wordsRu: {},
+      localizedStrings: {},
+      language: "RU"
     }
   }
+
+  /*TODO: move localization code to one single place*/
+  makeStrings () {
+    const { words, wordsEng = {}, wordsRu = {} } = this.state
+    let rus = {}
+    let eng = {}
+    words.forEach(item => {
+      eng[`${item}`] = wordsEng !== {} ? wordsEng[`${item}Eng`] : 'no data'
+      rus[`${item}`] = wordsRu !== {} ? wordsRu[`${item}Ru`] : 'no data'
+    })
+    let localizedStrings = new LocalizedStrings({
+      rus: rus,
+      eng: eng
+    })
+    this.setState({ localizedStrings })
+  }
+
+  saveInfo (language, suff, object) {
+    const { words } = this.state
+    if (suff === 'Ru') {
+      let wordsRu = {}
+      words.forEach(item => {
+        wordsRu[`${item}${suff}`] = object[`${language}`][`${item}${suff}`]
+      })
+      this.setState({ wordsRu, siteInfoLoaded: true })
+    } else if (suff === 'Eng') {
+      let wordsEng = {}
+      words.forEach(item => {
+        wordsEng[`${item}${suff}`] = object[`${language}`][`${item}${suff}`]
+      })
+      this.setState({ wordsEng, siteInfoLoaded: true })
+    }
+  }
+
+  setLanguage (language) {
+    const { localizedStrings } = this.state
+    console.log('set ', language)
+    localizedStrings.setLanguage(language.language)
+    this.setState({ localizedStrings })
+  }
+
+  componentDidMount () {
+    this.fetchText('faculty')
+  }
+
+  fetchText (page) {
+    firebase.database().ref('siteInfo/' + `${page}/`)
+    .once('value')
+    .then(snapshot => {
+      const object = snapshot.val()
+      if (object !== null) {
+        this.saveInfo('russian', 'Ru', object)
+        this.saveInfo('english', 'Eng', object)
+        this.makeStrings()
+      } else {
+        this.setState({ siteInfoLoaded: true })
+      }
+    })
+  }
+  /*-------------------------------------------------------*/
 
   componentWillMount() {
     const {params} = this.props
@@ -23,6 +90,7 @@ class MainView extends Component {
     if (this.props.params.discipline !== nextProps.params.discipline) {
       this.fetchCourses(nextProps.params.discipline)
     }
+    this.props.language !== nextProps.language && this.setLanguage(nextProps.language)
   }
 
   fetchCourses(discipline) {
@@ -136,6 +204,7 @@ class MainView extends Component {
     ))
   }
   render() {
+    const { localizedStrings } = this.state;
     const {coursesFetched, courses} = this.state
     const {params} = this.props
     if (!coursesFetched) {
@@ -150,7 +219,7 @@ class MainView extends Component {
             <div className='description-faculty text-description-faculty' style={{
               backgroundImage: 'url(https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/description.jpg?alt=media&token=2ee26469-daec-47ac-85a5-47b7189c151c)'
             }}>
-              ЗДЕСЬ МЫ ВОСПИТЫВАЕМ СТРАТЕГОВ И МЫСЛИТЕЛЕЙ, РАЗВИВАЕМ ЖИВОСТЬ УМА И РЕАКЦИЮ, РАСТИМ ДОСТОЙНЫХ И ЦИВИЛИЗОВАННЫХ ИГРОКОВ. ДОБРО ПОЖАЛОВАТЬ НА ФАКУЛЬТЕТ! {/* {hiWord} */}
+              {localizedStrings.hiWord}
             </div>
           </div>
           <div className='col-sm-4 col-md-4 '>
