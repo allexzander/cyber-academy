@@ -10,7 +10,7 @@ class Header extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      words: ['faculties', 'tournaments', 'forum', 'myCourses', 'statistics', 'logOut'],
+      words: ['faculties', 'tournaments', 'forum', 'myCourses', 'statistics', 'logIn', 'logOut'],
       wordsEng: {},
       wordsRu: {},
       strings: {},
@@ -22,7 +22,7 @@ class Header extends Component {
     console.log("Language change")
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.fetchText('header')
   }
 
@@ -89,7 +89,6 @@ class Header extends Component {
     const { user, language, onEngLang, onRusLang } = this.props
     const { strings } = this.state
 
-    console.log(strings.logOut)
     const classNameFirstButton = Boolean(Object.keys(user).length) ?
     'dropdown firstButtonLogin' : 'dropdown firstButtonLogout'
     return (<div className="row">
@@ -119,7 +118,7 @@ class Header extends Component {
                       <li><button type="button" className="btn btn-default button_shadow-golden  button-golden text-uppercase" id="login" onClick={() => 
                       { window.location.href = `${backend}/auth/steam`} }>
                       <img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/icon_steam_new.jpg?alt=media&token=45309ab7-ab34-489f-8184-b6eb84782fcc" alt="icon_steam"/>
-                      login</button></li>}
+                      {strings.logIn}</button></li>}
                     {Boolean(Object.keys(user).length) &&
                     <li className="dropdown">
                             <button className="button-golden dropbtn button_shadow-golden" onClick={() => 
@@ -127,7 +126,7 @@ class Header extends Component {
                             <div className="dropdown-content">
                             <a href='/MyCourses'>{strings.myCourses}</a>
                             <a href='/statistics'>{strings.statistics}</a>
-                            <a href='/' onClick={() => firebase.auth().signOut()}>Log out</a>
+                            <a href='/' onClick={() => firebase.auth().signOut()}>{strings.logOut}</a>
                                 <div><img src="https://firebasestorage.googleapis.com/v0/b/cyber-academy.appspot.com/o/dropdown_faculties_down.png?alt=media&token=17c819b5-e5d5-42b7-8896-df9354c2aa96" alt="dropdown_facs"/></div>
                             </div>
                     </li>}
