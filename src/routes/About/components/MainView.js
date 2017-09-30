@@ -1,29 +1,101 @@
 import React, { Component } from 'react'
 import './about.scss'
+import firebase from 'firebase'
+import LocalizedStrings from 'react-localization'
+
 class MainView extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
       courses: [],
-      coursesFetched: false
+      coursesFetched: false,
+      siteInfoLoaded: false,
+      words: ['aboutText', 'aboutTextWelcome'],
+      wordsEng: {},
+      wordsRu: {},
+      localizedStrings: {},
+      language: "RU"
     }
   }
 
+  /*TODO: move localization code to one single place*/
+  makeStrings () {
+    const { words, wordsEng = {}, wordsRu = {} } = this.state
+    let rus = {}
+    let eng = {}
+    words.forEach(item => {
+      eng[`${item}`] = wordsEng !== {} ? wordsEng[`${item}Eng`] : 'no data'
+      rus[`${item}`] = wordsRu !== {} ? wordsRu[`${item}Ru`] : 'no data'
+    })
+    let localizedStrings = new LocalizedStrings({
+      rus: rus,
+      eng: eng
+    })
+    this.setState({ localizedStrings })
+  }
+
+  saveInfo (language, suff, object) {
+    const { words } = this.state
+    if (suff === 'Ru') {
+      let wordsRu = {}
+      words.forEach(item => {
+        wordsRu[`${item}${suff}`] = object[`${language}`][`${item}${suff}`]
+      })
+      this.setState({ wordsRu, siteInfoLoaded: true })
+    } else if (suff === 'Eng') {
+      let wordsEng = {}
+      words.forEach(item => {
+        wordsEng[`${item}${suff}`] = object[`${language}`][`${item}${suff}`]
+      })
+      this.setState({ wordsEng, siteInfoLoaded: true })
+    }
+  }
+
+  setLanguage (language) {
+    const { localizedStrings } = this.state
+    console.log('set ', language)
+    localizedStrings.setLanguage(language.language)
+    this.setState({ localizedStrings })
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log("HomeView componentWillReceiveProps");
+    this.props.language !== nextProps.language && this.setLanguage(nextProps.language)
+  }
+
+  componentDidMount () {
+    this.fetchText('homepage')
+  }
+
+  fetchText (page) {
+    firebase.database().ref('siteInfo/' + `${page}/`)
+    .once('value')
+    .then(snapshot => {
+      const object = snapshot.val()
+      if (object !== null) {
+        this.saveInfo('russian', 'Ru', object)
+        this.saveInfo('english', 'Eng', object)
+        this.makeStrings()
+      } else {
+        this.setState({ siteInfoLoaded: true })
+      }
+    })
+  }
+  /*-------------------------------------------------------*/
+
   render () {
+    const { localizedStrings } = this.state;
     return (
       <div className='row'>
         <div className='col-sm-12 col-md-12 container'>
           <h4 className='about'>
             {/* {about} */}
-    <p>Мы очень любим киберспорт и считаем что это будушее, он будет развиваться огромными шагами и встанет в один ряд с футболом, баскетболом, хоккеем, теннисом, боксом, как по гонорарам, так и по популярности.
-Cyber Academy - это не просто гайды про dota 2, cs go  и другим дисциплинам это целая образовательная киберспортивная программа, которая состоит из последовательных уроков, советов, которые вы больше нигде не увидите, практических заданий и гейм тестов. В создании программы принимали участие профессиональные киберспортсмены, действующие тренера профессиональных команд, педагоги и психологи. Мы взяли лучший мировой опыт в сфере образования и спорта и перенесли его на киберспортивные дисциплины.
-Некоторые наши тренера работают в оффлайн школах и мы увидели множество проблем и неудобств с которыми сталкиваются ученики. Кому-то было неудобно добираться, кому-то было неудобно время, для кого-то это было дорого и получилось так, что много талантливых ребят просто не имели возможности заниматься. И поэтому мы решили сделать онлайн кибер академию.
-Наши преимущества в том, что вы не привязаны к определенному месту и времени, вы проходите обучение где и когда вам удобно, у вас есть доступ ко всем материалам в режиме онлайн. Наши тренера готовы ответить на любые ваши вопросы на форуме или через личные сообщения, проанализируют ваши реплеи и игровую статистику, станут вашими друзьями и помогут добиться успеха. И к тому же онлайн образование в разы дешевле, а результат ничуть не хуже. В этом уже успели убедиться наши первые ученики. У них абсолютно разный уровень игры, но каждый из них серьезно улучшил свой скилл и поднялся на новый уровень. Их отзывы и ощущения после прохождения нашей программы вы сможете почитать в комментариях к каждому курсу.
-Мы так же подумали о том, что каждый бы хотел не просто играть в свою любимую игру, а еще и зарабатывать на ней и поэтому мы будем постоянно проводить наши школьные турниры с призовыми.
+    <p>
+      {localizedStrings.aboutText}
 </p>
 <p>
-Добро пожаловать в Cyber Academy!</p>
+{localizedStrings.aboutTextWelcome}</p>
 </h4>
         </div>
       </div>
