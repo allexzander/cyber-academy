@@ -278,7 +278,7 @@ var job = new CronJob({
           }
 
           let newChartStatistic =
-          users[`${steamId}`].statistics.chartStatistic ?
+          (users[`${steamId}`].statistics && users[`${steamId}`].statistics.chartStatistic) ?
           users[`${steamId}`].statistics.chartStatistic :
           userData
           const winN = user.wl.data.win
@@ -287,7 +287,7 @@ var job = new CronJob({
           function pushPoint (item, field, fieldName) {
             if (item.field === field) {
               if (item.n !== 0 && item.n !== undefined) {
-                if (users[`${steamId}`].statistics.chartStatistic && newChartStatistic[`${fieldName}`].values) {
+                if (users[`${steamId}`].statistics && users[`${steamId}`].statistics.chartStatistic && newChartStatistic[`${fieldName}`].values) {
                   if (newChartStatistic[`${fieldName}`].values[(newChartStatistic[`${fieldName}`].values.length - 1)].n !== item.n) {
                     if (field === 'kda') {
                       newChartStatistic[`${fieldName}`].values.push({
@@ -369,13 +369,19 @@ var job = new CronJob({
               console.log('rewrite winRate', winRate, 'winN', winN, 'loseN', loseN, 'user', steamId, 'date', Date.now())
             }
           }
-          const newStatistics = users[`${steamId}`].statistics
-          newStatistics.chartStatistic = newChartStatistic
-
-          admin.database().ref('users/' + `${steamId}`).update({
-            statistics: newStatistics
-          })
-          console.log('newStatistics', newStatistics, Date.now())
+          console.log('steamId :' + steamId);
+          if (users[`${steamId}`].statistics) {
+            let newStatistics = users[`${steamId}`].statistics;
+            newStatistics.chartStatistic = newChartStatistic;
+  
+            admin.database().ref('users/' + `${steamId}`).update({
+              statistics: newStatistics
+            })
+            console.log('newStatistics', newStatistics, Date.now())
+          }
+          else {
+            admin.database().ref('users/' + `${steamId}`).child("statistics").set({chartStatistic : newChartStatistic});
+          }
         })
       })
     })
