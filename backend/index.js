@@ -10,6 +10,8 @@ const axios = require('axios')
 const CronJob = require('cron').CronJob
 const Promise = require('bluebird')
 
+const OpenDotaUtils = require('./utils/opendota.js');
+
 app.use(cors({ credentials: true, origin: true }))
 app.use(bodyParser.json())
 
@@ -518,6 +520,24 @@ function (request, response) {
   } else {
     response.redirect('/?failed')
   }
+})
+
+app.get('/testmethods', function (req, res) {
+  let playerDotaID = 93671397; //443836023
+
+  let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min"];
+  
+  OpenDotaUtils.howManyMatchesForPlayerID(playerDotaID, ).then(function (amount) {
+  }).then((amount) =>
+    OpenDotaUtils.fetchStatsForPlayerID(playerDotaID, statNames, amount).then(function (stats) {
+      console.log(`Fetching stats for: ${playerDotaID} matches`);
+      console.log(`Num matches to fetch: ${stats.length}`);
+    })
+  );
+
+  console.log("Fetching stats request has been sent...");
+
+  res.send("testing methods...");
 })
 
 app.listen(3001, function () {
