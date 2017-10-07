@@ -11,6 +11,7 @@ const CronJob = require('cron').CronJob
 const Promise = require('bluebird')
 
 const OpenDotaUtils = require('./utils/opendota.js');
+const FirbaseUtils = require('./utils/firebase.js');
 
 app.use(cors({ credentials: true, origin: true }))
 app.use(bodyParser.json())
@@ -527,13 +528,15 @@ app.get('/testmethods', function (req, res) {
 
   let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min"];
   
-  OpenDotaUtils.howManyMatchesForPlayerID(playerDotaID, ).then(function (amount) {
+  /*OpenDotaUtils.howManyMatchesForPlayerID(playerDotaID, ).then(function (amount) {
   }).then((amount) =>
     OpenDotaUtils.fetchStatsForPlayerID(playerDotaID, statNames, amount).then(function (stats) {
       console.log(`Fetching stats for: ${playerDotaID} matches`);
       console.log(`Num matches to fetch: ${stats.length}`);
     })
-  );
+  );*/
+
+  FirbaseUtils.logUsers();
 
   console.log("Fetching stats request has been sent...");
 
