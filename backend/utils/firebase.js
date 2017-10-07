@@ -38,13 +38,27 @@ FirbaseUtils.getUserBySteamId = function(steamId) {
 
 FirbaseUtils.addChildToUser = function(steamId, childName, statistics) {
   var query = firebase_admin.database().ref('users/' + steamId);
-  query.child(childName).set(statistics);
+  query.child(childName).set([]);
   return query.once("child_added")
     .then(function() {
-      query.child(childName).once("value").then(function(snapshot) {
-        console.log(`Added child: '${childName}' for user: ${steamId}`);
-        console.dir(snapshot.val());
-      });
+      console.dir(statistics);
+      for (let i = 0; i < statistics.length; ++i) {
+        query.child(childName).push(statistics[i]); 
+      }
+  });
+}
+
+FirbaseUtils.addSingleChildToUser = function(steamId, childName, data) {
+  var query = firebase_admin.database().ref('users/' + steamId);
+  query.child(childName).set(data);
+}
+
+FirbaseUtils.howManyRecordsForUserSteamId = function(steamId, recordPath) {
+  var query = firebase_admin.database().ref('users/' + steamId + '/' + recordPath);
+  return query.once("value")
+    .then(function(snapshot) {
+      console.log("Snapshot children: " + snapshot.numChildren());
+      return snapshot.numChildren();
   });
 }
 

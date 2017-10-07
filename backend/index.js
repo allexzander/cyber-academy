@@ -524,8 +524,9 @@ function (request, response) {
 })
 
 app.get('/testmethods', function (req, res) {
-
-  let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min"];
+//denies, hero damage, mmr,
+//https://api.opendota.com/api/players/443836023/wl?
+  let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min", "last_hits", "tower_damage", "kills", "deaths", "assists", "denies", "kda"];
 
   FirbaseUtils.allUsersSteamIds().then((steamIds) => {
     for (let i = 0; i < steamIds.length; ++i) {
@@ -534,9 +535,14 @@ app.get('/testmethods', function (req, res) {
       OpenDotaUtils.howManyMatchesForPlayerID(userDotaId).then(function (amount) {
       }).then((amount) =>
         OpenDotaUtils.fetchStatsForPlayerID(userDotaId, statNames, amount).then(function (stats) {
-          console.log("adding matches for user: " + userDotaId);
+          FirbaseUtils.howManyRecordsForUserSteamId(user.key, "openDotaStatistics/matches").then(function(numRecords){
+            console.log("RECORDS: " + numRecords);
+          })
+          FirbaseUtils.addChildToUser(user.key, "openDotaStatistics/matches", stats);
           
-          FirbaseUtils.addChildToUser(user.key, "openDotaStatistics", {matches: stats});
+          OpenDotaUtils.fetchWinLoseStatsForPlayerID(userDotaId).then(function (result) {
+            FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/win_rate", result);
+          })
         })
       );
       });
