@@ -36,6 +36,18 @@ FirbaseUtils.getUserBySteamId = function(steamId) {
   });
 }
 
+/*
+   @steamId: user steamId to query from database as 'users/' + steamId
+   returns Object(ket: steamId, value: user object)
+*/
+FirbaseUtils.getUserDotaStatisticsBySteamId = function(steamId) {
+  var query = firebase_admin.database().ref('users/' + steamId + "/openDotaStatistics");
+  return query.once("value")
+    .then(function(snapshot) {
+      return {key: steamId, value: snapshot.val()};
+  });
+}
+
 FirbaseUtils.addChildToUser = function(steamId, childName, statistics) {
   var query = firebase_admin.database().ref('users/' + steamId);
   if (query.child(childName) == null) {
