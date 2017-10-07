@@ -9,16 +9,15 @@ const firebase_admin = require('firebase-admin')
 let FirbaseUtils = {
 }
 
-FirbaseUtils.logUsers = function() {
+FirbaseUtils.allUsersSteamIds = function() {
   var query = firebase_admin.database().ref("users").orderByKey();
   return query.once("value")
     .then(function(snapshot) {
+      let steamIds = [];
       snapshot.forEach(function(childSnapshot) {
-        var key = childSnapshot.key; // "ada"
-        console.log(`USER: ${key}`);
-        console.dir(childSnapshot.val());
-        console.log("");
+        steamIds.push(childSnapshot.key);
     });
+    return steamIds;
   });
 }
 

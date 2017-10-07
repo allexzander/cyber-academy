@@ -536,7 +536,11 @@ app.get('/testmethods', function (req, res) {
     })
   );*/
 
-  FirbaseUtils.logUsers();
+  FirbaseUtils.allUsersSteamIds().then((steamIds) => {
+    for (let i = 0; i < steamIds.length; ++i) {
+      console.log("User: " + steamIds[i]);
+    }
+   });
 
   console.log("Fetching stats request has been sent...");
 
