@@ -523,45 +523,55 @@ function (request, response) {
   }
 })
 
-app.get('/testmethods', function (req, res) {
-//denies, hero damage, mmr,
-//https://api.opendota.com/api/players/443836023/wl?
+app.get('/fillstatistics', function (req, res) {
   let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min", "last_hits", "tower_damage", "kills", "deaths", "assists", "denies", "kda"];
 
+  //fetch user steamID for each user from database
   FirbaseUtils.allUsersSteamIds().then((steamIds) => {
     for (let i = 0; i < steamIds.length; ++i) {
+    //get each user by for fetched steamId
      FirbaseUtils.getUserBySteamId(steamIds[i]).then((user) => {
        let userDotaId = user.value.dotaId;
+       
+       //win/lose
+       OpenDotaUtils.fetchWinLoseStatsForPlayerID(userDotaId).then(function (result) {
+        FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/win_rate", result);
+      });
+      
+      //mmr
+      OpenDotaUtils.fetchMMRStatsForPlayerID(userDotaId).then(function (result) {
+        FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/mmr", result);
+      });
+
+       //fetch num matches from statistics
       OpenDotaUtils.howManyMatchesForPlayerID(userDotaId).then(function (amount) {
         return amount;
-      }).then((numMatches) =>
-      {
+      }).then((numMatches) => {
+        //fetch num records from firebase
         FirbaseUtils.howManyRecordsForUserSteamId(user.key, "openDotaStatistics/matches").then(function(numRecords) {
-          return numRecords;
-        }).then(function(numRecords) {
+          return numRecords; }).then(function(numRecords) {
+            //only fetch statistics, and update the firebase, if numMatches > numRecords
           if (numMatches > numRecords) {
             let limit = numMatches - numRecords;
-            console.log(" limit: " + limit)
             OpenDotaUtils.fetchStatsForPlayerID(userDotaId, statNames, limit).then(function (stats) {
               FirbaseUtils.addChildToUser(user.key, "openDotaStatistics/matches", stats);
-              
-              OpenDotaUtils.fetchWinLoseStatsForPlayerID(userDotaId).then(function (result) {
-                FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/win_rate", result);
-              })
             })
           }
-  
         });
-
-    }
-      );
       });
+    });
+  }
+});
+
+res.send("testing methods...");
+})
+
+app.get('/dropstatistics', function (req, res) {
+  FirbaseUtils.allUsersSteamIds().then((steamIds) => {
+    for (let i = 0; i < steamIds.length; ++i) {
+      FirbaseUtils.addSingleChildToUser(steamIds[i], "openDotaStatistics", null);
     }
-
-   });
-
-
-  res.send("testing methods...");
+  }).then(() => {res.send("statistics dropped...")});
 })
 
 app.listen(3001, function () {

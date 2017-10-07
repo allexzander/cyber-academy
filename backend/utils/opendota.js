@@ -67,7 +67,19 @@ OpenDotaUtils.fetchStatsForPlayerID = function(playerDotaId, statNames, limit) {
 OpenDotaUtils.fetchWinLoseStatsForPlayerID = function(playerDotaId) {
   const endPoint = "wl";
   let requestURL = `${baseURL}players/${playerDotaId}/${endPoint}`;
-  
+  return axios.get(requestURL)
+  .then(function (response) {
+    return response.data;
+  })
+  .catch(function (error) {
+    console.log("OpenDotaUtils.fetchStatsForPlayerID failed: " + error);
+    return [];
+  });
+}
+
+OpenDotaUtils.fetchMMRStatsForPlayerID = function(playerDotaId) {
+  let requestURL = `${baseURL}players/${playerDotaId}`;
+
   return axios.get(requestURL)
   .then(function (response) {
     return response.data;
