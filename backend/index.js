@@ -533,17 +533,27 @@ app.get('/testmethods', function (req, res) {
      FirbaseUtils.getUserBySteamId(steamIds[i]).then((user) => {
        let userDotaId = user.value.dotaId;
       OpenDotaUtils.howManyMatchesForPlayerID(userDotaId).then(function (amount) {
-      }).then((amount) =>
-        OpenDotaUtils.fetchStatsForPlayerID(userDotaId, statNames, amount).then(function (stats) {
-          FirbaseUtils.howManyRecordsForUserSteamId(user.key, "openDotaStatistics/matches").then(function(numRecords){
-            console.log("RECORDS: " + numRecords);
-          })
-          FirbaseUtils.addChildToUser(user.key, "openDotaStatistics/matches", stats);
-          
-          OpenDotaUtils.fetchWinLoseStatsForPlayerID(userDotaId).then(function (result) {
-            FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/win_rate", result);
-          })
-        })
+        return amount;
+      }).then((numMatches) =>
+      {
+        FirbaseUtils.howManyRecordsForUserSteamId(user.key, "openDotaStatistics/matches").then(function(numRecords) {
+          return numRecords;
+        }).then(function(numRecords) {
+          if (numMatches > numRecords) {
+            let limit = numMatches - numRecords;
+            console.log(" limit: " + limit)
+            OpenDotaUtils.fetchStatsForPlayerID(userDotaId, statNames, limit).then(function (stats) {
+              FirbaseUtils.addChildToUser(user.key, "openDotaStatistics/matches", stats);
+              
+              OpenDotaUtils.fetchWinLoseStatsForPlayerID(userDotaId).then(function (result) {
+                FirbaseUtils.addSingleChildToUser(user.key, "openDotaStatistics/win_rate", result);
+              })
+            })
+          }
+  
+        });
+
+    }
       );
       });
     }

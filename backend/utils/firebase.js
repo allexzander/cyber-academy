@@ -38,10 +38,12 @@ FirbaseUtils.getUserBySteamId = function(steamId) {
 
 FirbaseUtils.addChildToUser = function(steamId, childName, statistics) {
   var query = firebase_admin.database().ref('users/' + steamId);
-  query.child(childName).set([]);
+  if (query.child(childName) == null) {
+    query.child(childName).set([]);
+  }
   return query.once("child_added")
     .then(function() {
-      console.dir(statistics);
+      //console.dir(statistics);
       for (let i = 0; i < statistics.length; ++i) {
         query.child(childName).push(statistics[i]); 
       }
