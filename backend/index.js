@@ -538,7 +538,10 @@ app.get('/testmethods', function (req, res) {
 
   FirbaseUtils.allUsersSteamIds().then((steamIds) => {
     for (let i = 0; i < steamIds.length; ++i) {
-      console.log("User: " + steamIds[i]);
+      FirbaseUtils.getUserBySteamId(steamIds[i]).then((user) => {
+        console.log("User: " + user.key);
+        console.dir(user.value);
+      });
     }
    });
 
