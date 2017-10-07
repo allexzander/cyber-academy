@@ -48,9 +48,8 @@ Routes.get('/fillstatistics', function (req, res) {
         });
       });
     }
+    res.send("statistics fetched...");
   });
-  
-  res.send("statistics fetched...");
   })
 
 module.exports = Routes;

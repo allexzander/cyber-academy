@@ -9,14 +9,10 @@ const app = express()
 const axios = require('axios')
 const CronJob = require('cron').CronJob
 const Promise = require('bluebird')
-
-const OpenDotaUtils = require('./utils/opendota.js');
-const FirbaseUtils = require('./utils/firebase.js');
-
-const routes = require('./routes/routes.js');
+const Routes = require('./routes/routes.js');
 
 //  Connect all our routes to our application
-app.use('/', routes);
+app.use('/', Routes);
 
 app.use(cors({ credentials: true, origin: true }))
 app.use(bodyParser.json())
