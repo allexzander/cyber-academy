@@ -524,28 +524,26 @@ function (request, response) {
 })
 
 app.get('/testmethods', function (req, res) {
-  let playerDotaID = 93671397; //443836023
 
   let statNames = ["gold_per_min", "start_time", "hero_id", "xp_per_min"];
-  
-  /*OpenDotaUtils.howManyMatchesForPlayerID(playerDotaID, ).then(function (amount) {
-  }).then((amount) =>
-    OpenDotaUtils.fetchStatsForPlayerID(playerDotaID, statNames, amount).then(function (stats) {
-      console.log(`Fetching stats for: ${playerDotaID} matches`);
-      console.log(`Num matches to fetch: ${stats.length}`);
-    })
-  );*/
 
   FirbaseUtils.allUsersSteamIds().then((steamIds) => {
     for (let i = 0; i < steamIds.length; ++i) {
-      FirbaseUtils.getUserBySteamId(steamIds[i]).then((user) => {
-        console.log("User: " + user.key);
-        console.dir(user.value);
+     FirbaseUtils.getUserBySteamId(steamIds[i]).then((user) => {
+       let userDotaId = user.value.dotaId;
+      OpenDotaUtils.howManyMatchesForPlayerID(userDotaId).then(function (amount) {
+      }).then((amount) =>
+        OpenDotaUtils.fetchStatsForPlayerID(userDotaId, statNames, amount).then(function (stats) {
+          console.log("adding matches for user: " + userDotaId);
+          
+          FirbaseUtils.addChildToUser(user.key, "openDotaStatistics", {matches: stats});
+        })
+      );
       });
     }
+
    });
 
-  console.log("Fetching stats request has been sent...");
 
   res.send("testing methods...");
 })

@@ -36,4 +36,16 @@ FirbaseUtils.getUserBySteamId = function(steamId) {
   });
 }
 
+FirbaseUtils.addChildToUser = function(steamId, childName, statistics) {
+  var query = firebase_admin.database().ref('users/' + steamId);
+  query.child(childName).set(statistics);
+  return query.once("child_added")
+    .then(function() {
+      query.child(childName).once("value").then(function(snapshot) {
+        console.log(`Added child: '${childName}' for user: ${steamId}`);
+        console.dir(snapshot.val());
+      });
+  });
+}
+
 module.exports = FirbaseUtils;
