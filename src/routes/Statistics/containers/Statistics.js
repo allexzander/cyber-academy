@@ -6,6 +6,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 import moment from 'moment'
 import firebase from 'firebase'
 import CustomTooltip from './CustomTooltip'
+import backend from '../../../../config/apis'
+
+const NewStatisticsEnabled = false;
+
 class Statistics extends Component {
   constructor (props) {
     super(props)
@@ -16,12 +20,65 @@ class Statistics extends Component {
       field: 'kda',
       period: 'allTime',
       periodDataChart: [],
-      daysArray: []
+      daysArray: [],
+      newStatistics: [],
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.newStatistics != prevProps.newStatistics) {
+      console.log("Statistics set to state: ");
+      console.dir(this.state.newStatistics);
+
+      const { user } = this.props;
+
+      console.log("user.uid: " + user.uid);
+      console.dir(user);
     }
   }
 
   componentDidMount () {
-    this.fetchData()
+    this.fetchData();
+
+    if (NewStatisticsEnabled) {
+      const { user } = this.props;
+      this.fetchStatisticsForUserId(user.uid).then(function (response) {
+        ()=>this.setNewStatistics(response);
+      })
+      .catch(function (error) {
+        console.log("componentDidMount Error: " + error);
+      });
+    }
+  }
+
+  setNewStatistics(statistics) {
+    if (!NewStatisticsEnabled) {
+      console.log("Warning: NewStatisticsEnabled is disabled!");
+      return {};
+    }
+
+    let copy = Object.assign(this.state, {}, {newStatistics: statistics});
+    this.setState(copy);
+  }
+
+ fetchStatisticsForUserId = function(userId) {
+   if (!NewStatisticsEnabled) {
+     console.log("Warning: NewStatisticsEnabled is disabled!");
+     return {};
+   }
+    let requestURL = `${backend}/getdotastatistics/steamID=${userId}`;
+  
+    return axios.get(requestURL)
+    .then(function (response) {
+      let data = response.data;
+      console.log("Fetch statistics successfull: ");
+      console.dir(data);
+      return data;
+    })
+    .catch(function (error) {
+      console.log("fetchStatisticsForUserId failed: " + error);
+      return {};
+    });
   }
 
   fetchData () {
