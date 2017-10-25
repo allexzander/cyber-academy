@@ -10,6 +10,17 @@ import backend from '../../../../config/apis'
 
 const NewStatisticsEnabled = false;
 
+/*NEW STATISTICS*/
+const MillisecondsInWeek = 24 * 7 * 60 * 60 * 1000;
+const MillisecondsInMonth = 24 * 31 * 60 * 60 * 1000;
+const MillisecondsInYear = 24 * 365 * 60 * 60 * 1000;
+
+
+const OldStatisticFieldNamesToNew = {gpm: "gpm", heroDamage: "hero_damage", xpm: "xpm", 
+lastHits: "last_hits", kda: "kda", towerDamage: "tower_damage", denies: "denies"};
+
+/************** */
+
 class Statistics extends Component {
   constructor (props) {
     super(props)
@@ -25,39 +36,120 @@ class Statistics extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.newStatistics != prevProps.newStatistics) {
-      console.log("Statistics set to state: ");
-      console.dir(this.state.newStatistics);
+  /*NEW STATISTICS*/
+  formatData(field, period, inMatches) {
+    console.log("formatData: " + field);
+    field = OldStatisticFieldNamesToNew[field];
 
+    let data = [];
+    
+    let matches = inMatches.slice(0);
+
+    matches.sort(function (a, b) {
+      return a.start_time - b.start_time;
+    });
+
+    //filter
+    if (period == "month") {
+      var today = new Date;
+      var monthBefore = new Date(today.getTime() - MillisecondsInMonth);
+
+      var startTime = monthBefore.getTime();
+      var endTime = today.getTime();
+
+      console.log("startTime is: " + new Date(startTime).toUTCString());
+      console.log("endTime is: " + new Date(endTime).toUTCString());
+
+        matches = matches.filter(function(match) {
+          let startTimeMilliseconds = match.start_time * 1000;
+          return startTimeMilliseconds >= startTime && startTimeMilliseconds <= endTime;
+        });
+      }
+      else if (period == "week") {
+        var today = new Date;
+        var weekBefore = new Date(today.getTime() - MillisecondsInWeek);
+
+        var startTime = weekBefore.getTime();
+        var endTime = today.getTime();
+
+        console.log("startTime is: " + new Date(startTime).toUTCString());
+        console.log("endTime is: " + new Date(endTime).toUTCString());
+
+        matches = matches.filter(function(match) {
+          let startTimeMilliseconds = match.start_time * 1000;
+          return startTimeMilliseconds >= startTime && startTimeMilliseconds <= endTime;
+        });
+      }
+      else if (period == "day") {
+        var curr = new Date;
+
+        matches = matches.filter(function(match) {
+          let dateTime = new Date(match.start_time);
+          return dateTime.getDate() == curr.getDate();
+        });
+      }
+
+    console.log("Sorted");
+
+    var dateToHumanReadable = function(timestamp) {
+      let dateTime = new Date(timestamp * 1000);
+      let year = dateTime.getFullYear();
+      let month = dateTime.getMonth();
+      let date = dateTime.getDate();
+      let hours = dateTime.getHours();
+      let minutes = dateTime.getMinutes();
+      
+      //return (date + "/" + month + "/" + year + " " + hours + ":" + minutes);
+      return dateTime.toLocaleDateString() + " " + dateTime.toLocaleTimeString();
+    }
+
+
+    for (let i = 0; i < matches.length; ++i) {
+      let dataEntry = {date: dateToHumanReadable(matches[i].start_time), value: matches[i][field]};
+      data.push(dataEntry);
+    }
+
+    console.dir(this.state)
+
+    return data;
+  }
+
+  componentWillMount () {
+    if (NewStatisticsEnabled) {
+      console.log("componentWillMount");
       const { user } = this.props;
 
-      console.log("user.uid: " + user.uid);
-      console.dir(user);
+      this.fetchStatisticsForUserId(user.uid)
+      .then((response) =>this.handleNewStatisticsFetchSuccess(response))
+      .catch((error) =>this.handleNewStatisticsFetchError(error));
     }
   }
 
-  componentDidMount () {
-    this.fetchData();
-
-    if (NewStatisticsEnabled) {
-      const { user } = this.props;
-      this.fetchStatisticsForUserId(user.uid).then(function (response) {
-        ()=>this.setNewStatistics(response);
-      })
-      .catch(function (error) {
-        console.log("componentDidMount Error: " + error);
-      });
+  handleNewStatisticsFetchSuccess(response) {
+    console.log("handleNewStatisticsFetchSuccess");
+    console.dir(response);
+    if (response.matches) {
+      this.setNewStatistics(response.matches);
     }
+    else {
+      console.log("Error: response.matches doesn't exist");
+    }
+  }
+
+  handleNewStatisticsFetchError(error) {
+    console.log("handleNewStatisticsFetchError: " + error);
   }
 
   setNewStatistics(statistics) {
     if (!NewStatisticsEnabled) {
       console.log("Warning: NewStatisticsEnabled is disabled!");
-      return {};
+      return;
     }
 
+    console.log("setNewStatistics: ");
+    console.dir(statistics);
     let copy = Object.assign(this.state, {}, {newStatistics: statistics});
+    console.dir(copy);
     this.setState(copy);
   }
 
@@ -66,19 +158,117 @@ class Statistics extends Component {
      console.log("Warning: NewStatisticsEnabled is disabled!");
      return {};
    }
-    let requestURL = `${backend}/getdotastatistics/steamID=${userId}`;
+    let requestURL = `${backend}/getdotastatistics/?steamID=${userId}`;
   
     return axios.get(requestURL)
     .then(function (response) {
       let data = response.data;
-      console.log("Fetch statistics successfull: ");
-      console.dir(data);
       return data;
     })
     .catch(function (error) {
       console.log("fetchStatisticsForUserId failed: " + error);
       return {};
     });
+  }
+
+  renderChartNewStatistics (data = []) {
+    const { period, userDataLoaded } = this.state
+    const isDayChart = (period === 'day')
+    const isWeekChart = (period === 'week')
+    const periodCount = {
+      day: 'dddd',
+      week: 'dddd',
+      month: 'DD/MM',
+      allTime: 'MM/YY'
+    }
+
+    const timeAway = {
+      day: (24 * 60 * 60 * 1000),
+      week: (7 * 24 * 60 * 60 * 1000),
+      month:(30 * 24 * 60 * 60 * 1000),
+      allTime: (10 * 12 * 30 * 24 * 60 * 60 * 1000)
+    }
+    const newData = data.filter(item => { return item.date > (Date.now() - timeAway[`${period}`]) })
+    console.log(period,newData )
+    const newDataWithPoints = this.cutPoints(newData, periodCount)
+    const dateFormatMonthAndAllTime = (time) => {
+      return moment(time).format(periodCount[`${period}`])
+    }
+
+    const dateFormatWeek = (time) => {
+      if (!!data.filter(item => item.date === time)[0].dayValue) {
+        return moment(time).format(periodCount[`${period}`])
+      }
+    }
+
+    //TODO: bring this.state.period and this.formatData input to alignment
+    if(period == "month") {
+      const formattedData = this.formatData(this.state.field, "month", this.state.newStatistics);
+      
+      return (<div>
+        <LineChart width={1100} height={400} data={formattedData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
+            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
+              interval={Math.floor(data.length / 14)} />
+            <YAxis dataKey='value' stroke='yellow' />
+            <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
+            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
+          </LineChart>
+      </div>);
+    }
+    else if(period == "week") {
+      const formattedData = this.formatData(this.state.field, "week", this.state.newStatistics);
+      
+      return (<div>
+        <LineChart width={1100} height={400} data={formattedData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
+            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
+              interval={Math.floor(data.length / 14)} />
+            <YAxis dataKey='value' stroke='yellow' />
+            <Tooltip content={<CustomTooltip data={formattedData} period='week' />} />
+            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
+          </LineChart>
+      </div>);
+    }
+    else if(period == "day") {
+      const formattedData = this.formatData(this.state.field, "day", this.state.newStatistics);
+      
+      return (<div>
+        <LineChart width={1100} height={400} data={formattedData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
+            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
+              interval={Math.floor(data.length / 14)} />
+            <YAxis dataKey='value' stroke='yellow' />
+            <Tooltip content={<CustomTooltip data={formattedData} period='day' />} />
+            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
+          </LineChart>
+      </div>);
+    }
+    else {
+      //TODO: Make it work for other periods as well
+      const formattedData = this.formatData(this.state.field, "all_time", this.state.newStatistics);
+
+      let estimatedInterval = Math.floor(formattedData.length / 14);
+
+      console.log("Estimated interval for all time is: " + estimatedInterval);
+      
+      return (<div>
+        <LineChart width={1100} height={400} data={formattedData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
+            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
+              interval={estimatedInterval} />
+            <YAxis dataKey='value' stroke='yellow' />
+            <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
+            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
+          </LineChart>
+      </div>);
+    }
+  }
+
+  /************** */
+
+  componentDidMount () {
+    this.fetchData();
   }
 
   fetchData () {
@@ -128,6 +318,12 @@ class Statistics extends Component {
   }
 
   renderChart (data = []) {
+
+    //TODO: remove old charts, as soon as they work
+    if (NewStatisticsEnabled && this.state.newStatistics.length > 0) {
+      return this.renderChartNewStatistics(data);
+    }
+
     const { period, userDataLoaded } = this.state
     const isDayChart = (period === 'day')
     const isWeekChart = (period === 'week')
@@ -156,6 +352,26 @@ class Statistics extends Component {
         return moment(time).format(periodCount[`${period}`])
       }
     }
+
+    if (NewStatisticsEnabled && !!newData.length && !isDayChart && !isWeekChart) {
+      //TODO: Make it work for other periods as well
+
+      const formattedData = this.formatData("gpm", "all_time", this.state.newStatistics);
+      
+      return (<div>
+        {!!newData.length && !isDayChart && !isWeekChart &&
+          <LineChart width={1100} height={400} data={formattedData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
+            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
+              interval={Math.floor(data.length / 14)} />
+            <YAxis dataKey='value' stroke='yellow' />
+            <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
+            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
+          </LineChart>
+        }
+      </div>);
+    }
+
     return (
       <div>
         {userDataLoaded && !newData.length && <div> </div>}

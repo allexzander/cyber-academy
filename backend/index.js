@@ -27,7 +27,7 @@ const front = env === 'development'
 : 'https://cyber-academy.net'
 
 const backend = env === 'development'
-? 'http://localhost:3001'
+? 'http://13.59.19.153:3000/'
 : 'https://server.cyber-academy.net'
 
 admin.initializeApp({

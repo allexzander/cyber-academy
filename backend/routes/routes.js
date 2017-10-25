@@ -84,10 +84,11 @@ Routes.get('/fillstatistics', function (req, res) {
 
   Routes.get('/getdotastatistics', function (req, res) {
     console.log(req.query);
+    res.header("Access-Control-Allow-Origin", "*");
     if (req.query.steamID) {
       FirbaseUtils.getUserDotaStatisticsBySteamId(req.query.steamID).then((result) => 
       {
-          res.send(formatOpenDotaStatistics(result.value));
+        res.send(formatOpenDotaStatistics(result.value));
       });
     }
     else {
