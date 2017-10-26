@@ -8,16 +8,12 @@ import firebase from 'firebase'
 import CustomTooltip from './CustomTooltip'
 import backend from '../../../../config/apis'
 
-const NewStatisticsEnabled = false;
+const NewStatisticsEnabled = true;
 
 /*NEW STATISTICS*/
 const MillisecondsInWeek = 24 * 7 * 60 * 60 * 1000;
 const MillisecondsInMonth = 24 * 31 * 60 * 60 * 1000;
 const MillisecondsInYear = 24 * 365 * 60 * 60 * 1000;
-
-
-const OldStatisticFieldNamesToNew = {gpm: "gpm", heroDamage: "hero_damage", xpm: "xpm", 
-lastHits: "last_hits", kda: "kda", towerDamage: "tower_damage", denies: "denies"};
 
 /************** */
 
@@ -39,7 +35,6 @@ class Statistics extends Component {
   /*NEW STATISTICS*/
   formatData(field, period, inMatches) {
     console.log("formatData: " + field);
-    field = OldStatisticFieldNamesToNew[field];
 
     let data = [];
     
@@ -204,12 +199,18 @@ class Statistics extends Component {
     //TODO: bring this.state.period and this.formatData input to alignment
     if(period == "month") {
       const formattedData = this.formatData(this.state.field, "month", this.state.newStatistics);
+
+      if (formattedData.length == 0) {
+        return <h2>No statistics for this period:</h2>;
+      }
+
+      let xAxisInterval = Math.floor(formattedData.length / 14);
       
       return (<div>
         <LineChart width={1100} height={400} data={formattedData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
             <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
-              interval={Math.floor(data.length / 14)} />
+              interval={xAxisInterval} />
             <YAxis dataKey='value' stroke='yellow' />
             <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
             <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
@@ -218,6 +219,10 @@ class Statistics extends Component {
     }
     else if(period == "week") {
       const formattedData = this.formatData(this.state.field, "week", this.state.newStatistics);
+
+      if (formattedData.length == 0) {
+        return <h2>No statistics for this period:</h2>;
+      }
       
       return (<div>
         <LineChart width={1100} height={400} data={formattedData}
@@ -232,6 +237,10 @@ class Statistics extends Component {
     }
     else if(period == "day") {
       const formattedData = this.formatData(this.state.field, "day", this.state.newStatistics);
+
+      if (formattedData.length == 0) {
+        return <h2>No statistics for this period:</h2>;
+      }
       
       return (<div>
         <LineChart width={1100} height={400} data={formattedData}
@@ -248,21 +257,28 @@ class Statistics extends Component {
       //TODO: Make it work for other periods as well
       const formattedData = this.formatData(this.state.field, "all_time", this.state.newStatistics);
 
-      let estimatedInterval = Math.floor(formattedData.length / 14);
+      if (formattedData.length == 0) {
+        return <h2>No statistics for this period:</h2>;
+      }
 
-      console.log("Estimated interval for all time is: " + estimatedInterval);
+      let xAxisInterval = Math.floor(formattedData.length / 14);
       
       return (<div>
         <LineChart width={1100} height={400} data={formattedData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
             <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
-              interval={estimatedInterval} />
+              interval={xAxisInterval} />
             <YAxis dataKey='value' stroke='yellow' />
             <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
             <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
           </LineChart>
       </div>);
     }
+  }
+
+  handleChangeField(newField) {
+    let copy = Object.assign(this.state, {}, {field: newField});
+    this.setState(copy);
   }
 
   /************** */
@@ -318,12 +334,10 @@ class Statistics extends Component {
   }
 
   renderChart (data = []) {
-
     //TODO: remove old charts, as soon as they work
     if (NewStatisticsEnabled && this.state.newStatistics.length > 0) {
       return this.renderChartNewStatistics(data);
     }
-
     const { period, userDataLoaded } = this.state
     const isDayChart = (period === 'day')
     const isWeekChart = (period === 'week')
@@ -352,26 +366,6 @@ class Statistics extends Component {
         return moment(time).format(periodCount[`${period}`])
       }
     }
-
-    if (NewStatisticsEnabled && !!newData.length && !isDayChart && !isWeekChart) {
-      //TODO: Make it work for other periods as well
-
-      const formattedData = this.formatData("gpm", "all_time", this.state.newStatistics);
-      
-      return (<div>
-        {!!newData.length && !isDayChart && !isWeekChart &&
-          <LineChart width={1100} height={400} data={formattedData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }} >
-            <XAxis dataKey='date' stroke='white' tickFormatter={dateFormatMonthAndAllTime}
-              interval={Math.floor(data.length / 14)} />
-            <YAxis dataKey='value' stroke='yellow' />
-            <Tooltip content={<CustomTooltip data={formattedData} period='monthAndAllTime' />} />
-            <Line type='linear' dataKey='value' stroke='yellow' strokeWidth={3} />
-          </LineChart>
-        }
-      </div>);
-    }
-
     return (
       <div>
         {userDataLoaded && !newData.length && <div> </div>}
@@ -483,6 +477,13 @@ class Statistics extends Component {
                 >
                   All time statistic
                 </button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("gpm"); }}>GPM</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("xpm"); }}>XPM</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("kda"); }}>KDA</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("tower_damage"); }}>Tower Damage</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("hero_damage"); }}>Hero Damage</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("last_hits"); }}>Last Hits</button>
+                <button type='button' className='btn btn-success lg' onClick={() => {this.handleChangeField("denies"); }}>Denies</button>
 
                 {this.renderChart(fieldChartData)}
               </div>
